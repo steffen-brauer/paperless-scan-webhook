@@ -29,15 +29,19 @@ if ! scanimage --device-name="$DEVICE_NAME" \
   exit 2
 fi
 
-if ! ls "$TMP_DIR"/out*.tiff 1>/dev/null 2>&1; then
+if ! ls "$TEMP_DIR"/out*.tiff 1>/dev/null 2>&1; then
   echo "❌ No scanned pages found. Maybe the ADF is empty?"
-  exit 2
+  exit 3
 fi
 
 # Step 2: Convert TIFFs to PDF
 OUTPUT_PDF="$PAPERLESS_CONSUME_FOLDER/$OUTPUT_FILE"  # Save PDF to Paperless-ngx consume folder
 echo "Converting to PDF: $OUTPUT_PDF..."
-img2pdf "$TEMP_DIR/out"*.tiff -o "$OUTPUT_PDF"
+if ! img2pdf "$TEMP_DIR/out"*.tiff -o "$OUTPUT_PDF";then
+  echo "❌ Error creating PDF - File"
+  exit 4
+
+fi
 
 # Step 3: Clean up temporary TIFF files
 echo "Cleaning up temporary files..."
