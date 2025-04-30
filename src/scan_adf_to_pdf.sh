@@ -3,7 +3,7 @@
 # Usage: ./scan_adf_to_pdf.sh "device-name" "ADF Source" "output.pdf" "/path/to/consume/folder"
 
 DEVICE_NAME="$1"
-ADF_SOURCE="${2:-ADF Front}"       # Default to "ADF Front" if not specified
+ADF_SOURCE="${2:-Automatic Document Feeder(centrally aligned)}"
 PAPERLESS_CONSUME_FOLDER=${3:-"/usr/src/paperless/consume"} # Paperless-ngx consume folder (modify this path based on your setup)
 OUTPUT_FILE="${4:-output.pdf}"     # Default to "output.pdf" if not specified
 
@@ -19,13 +19,20 @@ if [ -z "$DEVICE_NAME" ]; then
 fi
 
 # Step 1: Scan pages using ADF
-echo "Scanning from device: $DEVICE_NAME using source: $ADF_SOURCE..."
+echo "📥 Scanning from device: $DEVICE_NAME using source: $ADF_SOURCE..."
 
-scanimage --device-name="$DEVICE_NAME" \
-          --batch --format=tiff \
-          --source="$ADF_SOURCE" \
-          --resolution 300 \
-          --output-file="$TEMP_DIR/out%03d.tiff"  # Store TIFFs in /tmp/scan
+if ! scanimage --device-name="$DEVICE_NAME" \
+               --batch="$TEMP_DIR/out%03d.tiff" --format=tiff \
+               --source="$ADF_SOURCE" \
+               --resolution 300; then
+  echo "❌ Scan failed. Possibly empty ADF."
+  exit 2
+fi
+
+if ! ls "$TMP_DIR"/out*.tiff 1>/dev/null 2>&1; then
+  echo "❌ No scanned pages found. Maybe the ADF is empty?"
+  exit 2
+fi
 
 # Step 2: Convert TIFFs to PDF
 OUTPUT_PDF="$PAPERLESS_CONSUME_FOLDER/$OUTPUT_FILE"  # Save PDF to Paperless-ngx consume folder
