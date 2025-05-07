@@ -78,4 +78,4 @@ status:
 	sudo systemctl status $(APP_NAME)
 
 journal:
-	sudo journalctl -u flaskapp.service -f
+	sudo journalctl -u $(APP_NAME) -f
