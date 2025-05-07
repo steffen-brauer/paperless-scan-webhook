@@ -32,7 +32,7 @@ dependencies:
 	fi
 
 service:
-	@echo "   ^~         ^o  Creating systemd service file..."
+	@echo "➡️  Creating systemd service file..."
 	@echo "[Unit]" | sudo tee $(SERVICE_FILE) > /dev/null
 	@echo "Description=Gunicorn instance to serve Flask app" | sudo tee -a $(SERVICE_FILE) > /dev/null
 	@echo "After=network.target" | sudo tee -a $(SERVICE_FILE) > /dev/null
@@ -42,7 +42,7 @@ service:
 	@echo "Group=paperless" | sudo tee -a $(SERVICE_FILE) > /dev/null
 	@echo "WorkingDirectory=$(APP_DIR)/src" | sudo tee -a $(SERVICE_FILE) > /dev/null
 	@echo "Environment=\"PATH=$(VENV_DIR)/bin\"" | sudo tee -a $(SERVICE_FILE) > /dev/null
-	@echo "ExecStart=$(VENV_DIR)/bin/gunicorn -w $(shell nproc) -b 0.0.0.0:5050 app:app --access-logfile $(LOG_FILE)"
+	@echo "ExecStart=$(VENV_DIR)/bin/gunicorn -w $(shell nproc) -b 0.0.0.0:8000 app:app --access-logfile $(LOG_FILE)" | sudo tee -a $(SERVICE_FILE) > /dev/null
 	@echo "Restart=always" | sudo tee -a $(SERVICE_FILE) > /dev/null
 	@echo "RestartSec=5" | sudo tee -a $(SERVICE_FILE) > /dev/null
 	@echo "" | sudo tee -a $(SERVICE_FILE) > /dev/null
