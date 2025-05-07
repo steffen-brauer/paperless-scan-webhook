@@ -4,7 +4,7 @@
 
 DEVICE_NAME="$1"
 ADF_SOURCE="${2:-Automatic Document Feeder(centrally aligned)}"
-PAPERLESS_CONSUME_FOLDER=${3:-"/usr/src/paperless/consume"} # Paperless-ngx consume folder (modify this path based on your setup)
+PAPERLESS_CONSUME_FOLDER=${3:-"/opt/paperless/consume"} # Paperless-ngx consume folder (modify this path based on your setup)
 OUTPUT_FILE="${4:-output.pdf}"     # Default to "output.pdf" if not specified
 
 # Temporary directory for TIFF files
